@@ -1,0 +1,17 @@
+{
+    "name": "facerecognitionnode",
+    "version": "1.0.0",
+    "description": "",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "npx nodemon app.js start http://localhost:3000"
+    },
+    "dependencies": {
+        "express": "^4.16.4",
+        "request": "^2.88.0",
+        "nodemon": "^1.19.3"
+    },
+    "author": "",
+    "license": "ISC"
+}

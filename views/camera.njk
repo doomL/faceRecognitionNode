@@ -1,0 +1,65 @@
+>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Smart Device Camera Template for HTML, CSS, JS and WebRTC">
+    <meta name="keywords" content="HTML,CSS,JavaScript, WebRTC, Camera">
+    <meta name="author" content="Kasper Kamperman">
+    <title>Mobile First Camera Template</title>
+    <link rel="stylesheet" type="text/css" href="/css/dropdown.css">
+    <link rel="stylesheet" type="text/css" href="/css/webcamTemplate.css">
+</head>
+
+<body>
+
+    <img src="{{ url_for('video_feed') }}" hidden="true">
+    <div id="container">
+        <div id="vid_container">
+            <video autoplay id="videoElement" playsinline></video>
+            <canvas id="canvasElement" hidden="true"></canvas>
+            <div id="video_overlay"></div>
+        </div>
+        <div id="gui_controls">
+            <button id="backButton" name="go back" type="button" aria-pressed="false"></button>
+            <button id="switchCameraButton" name="switch Camera" type="button" aria-pressed="false"></button>
+            <button id="takePhotoButton" name="take Photo" type="button"></button>
+            <button id="toggleFullScreenButton" name="toggle FullScreen" type="button" aria-pressed="false"></button>
+            <div class="button dropdown">
+                <select id="colorselector" onchange="location = this.value;">
+                    {%if session['algorithm']== 1 %} 
+                   <option value="/surf" selected>Surf</option>
+                   {%else%}
+                   <option value="/surf" >Surf</option>
+                   {%endif%}
+                   
+                   {%if session['algorithm']== 2 %}
+                   <option value="/sift" selected>Sift</option>
+                   {%else%}
+                   <option value="/sift" >Sift</option>
+                   {%endif%}
+
+                   {%if session['algorithm']== 3 %}
+                   <option value="/orb" selected>Orb</option>
+                   {%else%}
+                   <option value="/orb" >Orb</option>
+                   {%endif%}
+
+                </select>
+            </div>
+        </div>
+    </div>
+    <script src="/js/DetectRTC.min.js"></script>
+    <script src="/js/adapter.min.js"></script>
+    <script src="/js/screenfull.min.js"></script>
+    <script src="/js/howler.core.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+    <script src="/js/camTemplate.js"></script>
+    <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+</body>
+
+</html>

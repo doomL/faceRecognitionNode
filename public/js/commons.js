@@ -157,7 +157,7 @@ function capture(video, scaleFactor) {
 /**
  * Invokes the <code>capture</code> function and attaches the canvas element to the DOM.
  */
-function shoot(video) {
+async function shoot(video, blob) {
 
     $('<canvas>').attr({
         id: "canvas"
@@ -170,10 +170,17 @@ function shoot(video) {
     canvas.height = video.videoHeight;
     ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
 
+    var formData = new FormData();
+    await formData.append('video-blob', blob);
+    console.log(formData.get('video-blob'))
+
+    console.log(blob)
     $.ajax({
         url: "/intruder",
-        data: { canvas: canvas.toDataURL('image/png') },
-        method: "POST"
+        data: { formData: formData, canvas: canvas },
+        method: "POST",
+        processData: false,
+        contentType: false
 
     });
 

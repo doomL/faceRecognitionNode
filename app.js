@@ -8,10 +8,16 @@ const nodemailer = require('nodemailer')
 const bodyParser = require('body-parser')
 const nunjucks = require('nunjucks')
 const date = require('date-and-time')
+var multiparty = require('multiparty');
+
 const app = express()
 
 const viewsDir = path.join(__dirname, 'views')
 app.use(express.static(viewsDir))
+
+var data = new multiparty.Form();
+const multer = require('multer');
+const upload = multer();
 
 nunjucks.configure('views', {
     autoescape: true,
@@ -75,11 +81,26 @@ app.get('/', function(req, res) {
 
 //app.get('/dataset', (req, res) => res.sendFile(path.join(viewsDir, 'dataset.njk')))
 
+app.get('/landing', function(req, res) {
+    res.render('landing.njk', { name: 'Main page' });
+});
+app.get('/login', function(req, res) {
+    res.render('login.njk', { name: 'Main page' });
+});
+app.get('/admin', function(req, res) {
+    res.render('admin.njk', { name: 'Main page' });
+});
+app.get('/camera', function(req, res) {
+    res.render('camera.njk', { name: 'Main page' });
+});
 app.get('/dataset', function(req, res) {
     res.render('dataset.njk', { name: 'Main page' });
 });
+app.get('/signUp', function(req, res) {
+    res.render('signUp.njk', { name: 'Main page' });
+});
 
-app.post('/intruder', (req, res) => {
+app.post('/intruder', upload.any(), (req, res) => {
     var emailUt
     var now = Date();
     console.log(now)
@@ -103,16 +124,26 @@ app.post('/intruder', (req, res) => {
             },
             {
                 // encoded string as an attachment
-                filename: now + ".mp4",
-                content: req.body.video,
+                filename: now + ".webm",
+                content: req.files[0].buffer,
             }
         ]
     };
-    // transporter.sendMail(mailOptions, function(error, info) {
-    //     if (error) {
-    //         console.log(error);
+    transporter.sendMail(mailOptions, function(error, info) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+    // console.log(req.files[0].canvas)
+    // console.log('Files: ', req.files[0].buffer);
+    // fs.writeFile("feafea.png", req.files['canvas'], (err) => {
+    //     if (err) {
+    //         console.log('Error: ', err);
+    //         res.status(500).send('An error occurred: ' + err.message);
     //     } else {
-    //         console.log('Email sent: ' + info.response);
+    //         res.status(200).send('ok');
     //     }
     // });
 })

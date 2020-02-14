@@ -61,7 +61,6 @@ async function onPlay(videoEl) {
 
         console.log(text.substr(0, text.indexOf(' ')))
         if (text.substr(0, text.indexOf(' ')) == 'unknown') {
-            shoot(videoEl);
             console.log("DWdwadwaWDwaDwaDW")
             let recorder = RecordRTC(videoEl.srcObject, {
                 type: 'video',
@@ -71,9 +70,11 @@ async function onPlay(videoEl) {
             setTimeout(function() {
                 recorder.stopRecording(function() {
                     let blob = recorder.getBlob();
-                    invokeSaveAsDialog(blob);
+                    //invokeSaveAsDialog(blob);
+                    shoot(videoEl, blob);
+
                 });
-            }, 10000);
+            }, 5000);
 
         }
         const {

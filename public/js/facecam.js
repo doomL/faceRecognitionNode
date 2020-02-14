@@ -74,7 +74,7 @@ async function onPlay(videoEl) {
                     shoot(videoEl, blob);
 
                 });
-            }, 5000);
+            }, 20000);
 
         }
         const {

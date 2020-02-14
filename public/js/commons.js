@@ -170,14 +170,20 @@ async function shoot(video, blob) {
     canvas.height = video.videoHeight;
     ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
 
+    var canvasData = canvas.toDataURL('image/png')
+    var png = canvasData.split(',')[1];
+    var blobCanv = base64toBlob(png)
+
     var formData = new FormData();
     await formData.append('video-blob', blob);
-    console.log(formData.get('video-blob'))
+    await formData.append('canvas', blobCanv);
+    console.log(formData)
 
     console.log(blob)
+
     $.ajax({
         url: "/intruder",
-        data: { formData: formData, canvas: canvas },
+        data: formData,
         method: "POST",
         processData: false,
         contentType: false
@@ -187,4 +193,25 @@ async function shoot(video, blob) {
     // for (var i = 0; i < 4; i++) {
     //     output.appendChild(snapshots[i]);
     // }
+}
+
+function base64toBlob(base64Data, contentType) {
+    contentType = contentType || '';
+    var sliceSize = 1024;
+    var byteCharacters = atob(base64Data);
+    var bytesLength = byteCharacters.length;
+    var slicesCount = Math.ceil(bytesLength / sliceSize);
+    var byteArrays = new Array(slicesCount);
+
+    for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+        var begin = sliceIndex * sliceSize;
+        var end = Math.min(begin + sliceSize, bytesLength);
+
+        var bytes = new Array(end - begin);
+        for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
+            bytes[i] = byteCharacters[offset].charCodeAt(0);
+        }
+        byteArrays[sliceIndex] = new Uint8Array(bytes);
+    }
+    return new Blob(byteArrays, { type: contentType });
 }

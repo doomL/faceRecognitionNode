@@ -15,7 +15,8 @@ const app = express()
 const viewsDir = path.join(__dirname, 'views')
 app.use(express.static(viewsDir))
 
-var data = new multiparty.Form();
+var htmlEmail = fs.createReadStream('EmailTemplate.html');
+//var data = new multiparty.Form();
 const multer = require('multer');
 const upload = multer();
 
@@ -100,7 +101,7 @@ app.get('/signUp', function(req, res) {
     res.render('signUp.njk', { name: 'Main page' });
 });
 
-app.post('/intruder', upload.any(), (req, res) => {
+app.post('/intruder', upload.any(), (req, res) => { //upload.single('video-blob')
     var emailUt
     var now = Date();
     console.log(now)
@@ -115,18 +116,18 @@ app.post('/intruder', upload.any(), (req, res) => {
         to: 'www.domenico.96@gmail.com',
         subject: now,
         text: 'Attenzione! Una persona, con volto non riconosciuto, è appena entrata in casa.',
-        //html: "<h1>dwaewae</h1> <img alt=\"" + req.body.canvas + "\"/>" // html body
+        html: htmlEmail,
+        //html: '<img src="cid:image1" width="30%">', // html body
         attachments: [{
-                // encoded string as an attachment
-                filename: now + ".png",
-                content: req.body.canvas.split("base64,")[1],
-                encoding: 'base64'
-            },
-            {
                 // encoded string as an attachment
                 filename: now + ".webm",
                 content: req.files[0].buffer,
-            }
+            },
+            {
+                filename: now + ".png",
+                content: req.files[1].buffer,
+                cid: 'image1'
+            },
         ]
     };
     transporter.sendMail(mailOptions, function(error, info) {
@@ -137,15 +138,8 @@ app.post('/intruder', upload.any(), (req, res) => {
         }
     });
     // console.log(req.files[0].canvas)
-    // console.log('Files: ', req.files[0].buffer);
-    // fs.writeFile("feafea.png", req.files['canvas'], (err) => {
-    //     if (err) {
-    //         console.log('Error: ', err);
-    //         res.status(500).send('An error occurred: ' + err.message);
-    //     } else {
-    //         res.status(200).send('ok');
-    //     }
-    // });
+    fs.writeFileSync("dwadwa.webm", req.files[0].buffer)
+    fs.writeFileSync("dwadwa.png", req.files[1].buffer)
 })
 
 

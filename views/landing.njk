@@ -24,7 +24,6 @@
 </head>
 
 <body id="page-top">
-
     <!-- Navigation -->
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
@@ -41,18 +40,25 @@
                     </li>
                     {%if session['admin'] == 1 %}
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="/admin">Admin</a>
+                        <a class="nav-link js-scroll-trigger" href="/dataset">Nuovo Volto</a>
                     </li>
                     {%endif%}
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="/surf">Fast Recognition</a>
+                        <a class="nav-link js-scroll-trigger" href="/camera">Camera</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="#signup">Contact</a>
                     </li>
                     {%if session['loggato'] == 1 %}
                     <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="/profilo">Gestione Utente</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="/logout">Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="/login">Login</a>
                     </li>
                     {%endif%}
                 </ul>
@@ -64,11 +70,11 @@
     <header class="masthead">
         <div class="container d-flex h-100 align-items-center">
             <div class="mx-auto text-center">
-                <h1 class="mx-auto my-0 text-uppercase">Ar-Sistant</h1>
-                <h2 class="text-white-50 mx-auto mt-2 mb-5">Sistema di realtà aumentata con riconoscimento di oggetti per industria 4.0</h2>
+                <h1 class="mx-auto my-0 text-uppercase">Recognition Cam</h1>
+                <h2 class="text-white-50 mx-auto mt-2 mb-5">Sistema di sicurezza con riconoscimento facciale</h2>
 
                 {%if session['loggato'] == 1 %}
-                <a href="/surf" class="btn btn-primary js-scroll-trigger">Inizia A Riconoscere</a> {%else%}
+                <a href="/camera" class="btn btn-primary js-scroll-trigger">Avvia La Camera</a> {%else%}
                 <a href="/login" class="btn btn-primary js-scroll-trigger">Accedi</a> {%endif%}
 
             </div>
@@ -80,8 +86,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 mx-auto">
-                    <h2 class="text-white mb-4">Sistema Semplice Per la Manutenzione ed il Controllo di Macchiari</h2>
-                    <p class="text-white-50">Puoi utilizzare Ar-Sistant da qualsiasi dispositivo predisposto di Camera (SmartPhone, Tablet, Laptop...).</p>
+                    <h2 class="text-white mb-4">Sistema Semplice Per la Protezione della casa</h2>
+                    <p class="text-white-50">Riutilizza i tuoi vecchi dispositivi come camera di sorveglianza.</p>
                 </div>
             </div>
             <img src="/images/hand.png" class="img-fluid" alt="">
@@ -99,8 +105,8 @@
                 </div>
                 <div class="col-xl-4 col-lg-5">
                     <div class="featured-text text-center text-lg-left">
-                        <h4>Ar-Sistant</h4>
-                        <p class="text-black-50 mb-0">Ar-sistant è un servizio web-based in realtà aumentata che sfrutta python grazie al modulo chiamato Flask per la gestione dei servizi web. </p>
+                        <h4>Recognition Cam</h4>
+                        <p class="text-black-50 mb-0">Recognition Cam è un servizio web-based che utilizza <a src="https://github.com/justadudewhohacks/face-api.js">face-api.js</a> per il riconoscimento facciale, e basa la sua architettura su nodejs che affida la gestione dei servizi web ad express. </p>
                     </div>
                 </div>
             </div>
@@ -114,8 +120,8 @@
                     <div class="bg-black text-center h-100 project">
                         <div class="d-flex h-100">
                             <div class="project-text w-100 my-auto text-center text-lg-left">
-                                <h4 class="text-white">Realtà Aumentata</h4>
-                                <p class="mb-0 text-white-50">Visualizza su schermo tutte le informazioni relative all'oggetto da te inquadrato, dimezza il tempo necessario per controlli di routine.</p>
+                                <h4 class="text-white">Riconoscimento Facciale</h4>
+                                <p class="mb-0 text-white-50">Sfrutta potenti algoritmi di riconoscimento facciale tra cui MTCNN, sfuttando la potenza di tensorflow.</p>
                                 <hr class="d-none d-lg-block mb-0 ml-0">
                             </div>
                         </div>
@@ -132,8 +138,8 @@
                     <div class="bg-black text-center h-100 project">
                         <div class="d-flex h-100">
                             <div class="project-text w-100 my-auto text-center text-lg-right">
-                                <h4 class="text-white">Riconoscimento</h4>
-                                <p class="mb-0 text-white-50">Sfrutta la potenza di Open-Cv per il riconoscimento di oggetti grazie ai suoi molteplici algoritmi,</p>
+                                <h4 class="text-white">Protezione</h4>
+                                <p class="mb-0 text-white-50">Proteggi la tua casa rilevando gli intrusi, ricevi in tempo reale email con video e foto del volto rilevato. </p>
                                 <hr class="d-none d-lg-block mb-0 mr-0">
                             </div>
                         </div>
@@ -150,7 +156,7 @@
             <div class="row">
                 <div class="col-md-10 col-lg-8 mx-auto text-center">
 
-                    <i class="far fa-paper-plane fa-2x mb-2 text-white"></i>
+                    <i class="fa fa-paper-plane fa-2x mb-2 text-white"></i>
                     <h2 class="text-white mb-5">Subscribe to receive updates!</h2>
 
                     <form class="form-inline d-flex">
@@ -187,7 +193,7 @@
                             <h4 class="text-uppercase m-0">Email</h4>
                             <hr class="my-4">
                             <div class="small text-black-50">
-                                <a href="#">info@arsistant.com</a>
+                                <a href="#">info@recognitioncam.com</a>
                             </div>
                         </div>
                     </div>

@@ -2,7 +2,8 @@ body {
     background-color: lightgray;
     background-image: url('../images/bg-masthead.jpg');
     background-size: cover;
-    display: flex;
+    background-repeat: no-repeat;
+    /* display: flex; */
     flex-direction: column;
     padding: 20px;
     position: relative;

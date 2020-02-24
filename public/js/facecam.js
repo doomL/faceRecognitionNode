@@ -30,6 +30,7 @@ async function onPlay(videoEl) {
         width,
         height
     } = faceapi.getMediaDimensions(videoEl)
+    console.log(width)
     const canvas = $('#overlay').get(0)
     canvas.width = width
     canvas.height = height
@@ -118,3 +119,16 @@ async function run() {
 $(document).ready(function() {
     run()
 })
+
+$(window).resize(larg);
+
+function larg() {
+    var { width, height } = faceapi.getMediaDimensions($('#inputVideo').get(0))
+
+    const inputVideo = document.getElementById("inputVideo")
+    var canvas = $('#overlay').get(0)
+    canvas.width = getComputedStyle(inputVideo).width
+    canvas.height = getComputedStyle(inputVideo).height
+
+    alert(getComputedStyle(inputVideo).width + "X" + getComputedStyle(inputVideo).height)
+}

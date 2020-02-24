@@ -47,19 +47,15 @@ $(document).ready(function() {
             type: 'POST',
             data: { 'name': name, 'pass': md5(pass) },
             success: function(response) {
-                iziToast.success({
-                    title: 'OK',
-                    message: 'Successfully inserted record!',
-                });
                 window.location.replace("/");
             },
             error: function(response) {
                 //json = JSON.parse(response);
                 iziToast.error({
-                    title: 'Error',
-                    message: 'Illegal operation',
+                    title: 'Errore',
+                    message: 'Username e/o password sbagliati',
                 });
-                window.location.replace("/login");
+
             }
         });
     });
@@ -114,14 +110,14 @@ $(document).ready(function() {
 
     });
 
-    $("#azienda").keyup(function (event) {
+    $("#azienda").keyup(function(event) {
         if (event.keyCode === 13) {
             $("#registration").click();
         }
     });
 
 
-    $("#pass").keyup(function (event) {
+    $("#pass").keyup(function(event) {
         if (event.keyCode === 13) {
             $("#login").click();
         }

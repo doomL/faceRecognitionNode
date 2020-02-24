@@ -97,7 +97,8 @@
     $(document).ready(function() {
         var dimensions = [$("#take-photo").width(), $("#take-photo").height()]
         document.getElementById('video').addEventListener('loadeddata', function() {
-            $("#video_overlays").css({ "position": "absolute", "top": "0", "left": "0", "height": $(video)[0].videoHeight, "width": $(video)[0].videoWidth, "z - index": "3", "display": "block", "text-align": "center" });
+            $("#video_overlays").css({ "position": "absolute", "height": $(video)[0].videoHeight, "width": $(video)[0].videoWidth, "z - index": "3", "display": "block", "text-align": "center" });
+            $("#video_overlays").removeAttr("hidden")
             $("#over").attr("height", $(video)[0].videoHeight)
             $("#take-photo").css({ "top": $(video)[0].videoHeight - 62, "left": $(video)[0].videoWidth - 62, "display": "flex" });
 
@@ -108,26 +109,46 @@
         $("#over").attr("height", $(video)[0].videoHeight)
         $("#take-photo").css({ "top": $(video)[0].videoHeight - 62, "left": $(video)[0].videoWidth - 62, "display": "flex" });
     });
+    $(window).resize(function() {
+        $("#over").css("height", $(video)[0].videoHeight)
+        $("#video_overlays").css("height", $(video)[0].videoHeight)
+        console.log("dwadw")
+    });
 
     function sendData() {
         var images = []
         var i;
         for (i = 1; i <= 5; i++)
             images.push(document.getElementById('canvas' + i).toDataURL('image/png'))
-        $.ajax({
-            url: "/dataset",
-            data: { images: images },
-            method: "POST"
+        Swal.fire({
+            title: 'Inserisci il nome della persona',
+            input: 'text',
+            inputAttributes: {
+                autocapitalize: 'off'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Invia',
+            showLoaderOnConfirm: true,
+            allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url: "/dataset",
+                    data: { images: images, name: result.value },
+                    method: "POST"
 
-        });
-        Swal.fire(
-            'Successo',
-            'La registrazione è andata a buon fine',
-            'success'
-        ).then((result) => {
-            location.reload();
+                });
+                Swal.fire(
+                    'Successo',
+                    result.value + ' è stato registrato',
+                    'success'
+                ).then((result) => {
+                    location.reload();
+                });
+            }
 
-        });
+        })
+
     }
 
     function removePrevious() {

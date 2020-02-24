@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -35,9 +35,9 @@
         <div class="container">
             <a class="navbar-brand js-scroll-trigger" href="/">Smart Maintenance</a>
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        Menu
-        <i class="fas fa-bars"></i>
-      </button>
+    Menu
+    <i class="fa fa-bars"></i>
+  </button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
@@ -45,18 +45,25 @@
                     </li>
                     {%if session['admin'] == 1 %}
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="/admin">Admin</a>
+                        <a class="nav-link js-scroll-trigger" href="/dataset">Nuovo Volto</a>
                     </li>
                     {%endif%}
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="/surf">Fast Recognition</a>
+                        <a class="nav-link js-scroll-trigger" href="/camera">Camera</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="#signup">Contact</a>
                     </li>
                     {%if session['loggato'] == 1 %}
                     <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="/profilo">Gestione Utente</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="/logout">Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="/login">Login</a>
                     </li>
                     {%endif%}
                 </ul>
@@ -64,71 +71,25 @@
         </div>
     </nav>
 
-    <div class="wrapper">
-        <header>
-            <h1>Admin Manager</h1>
-        </header>
-
-        <div class="ways">
-            <ul>
-                <li class="active">
-                    add New Machine
-                </li>
-                <li class="">
-                    Manage Machines
-                </li>
-            </ul>
+    
+               <div class="contentarea">
+        <div class="camera">
+            <video id="video" onload="printLayout()" style="max-width:-webkit-fill-available ;margin: auto;display: block;">Video stream not available.</video>
+            <div id="video_overlays" hidden>
+                <img id="over" src="/images/overlay/overlay1.png" />
+            </div>
+            <a href="#" class="photoB" id="take-photo" title="Take Photo">
+                <i class="material-icons">camera_alt</i></a>
         </div>
+        <div class="row" style="margin: auto;display: table;">
+    <div class="col-xs-6 previous">
+        <a id="next" class="push_button disabled" style="cursor: pointer;" >Prosegui</a>
+    </div>
+    <div class="col-xs-6 next">
+        <a id="delete" class="push_button disabled" style="cursor: pointer;">Elimina Foto Precedente</a>
+    </div>
+    </div>
 
-        <div class="sections">
-
-            <section id="addMachine" class="active">
-                <input type="text" placeholder="Name" id="name" />
-                <input type="text" placeholder="Model" id="model" />
-                <input type="text" placeholder="Type" id="type" />
-                <select id="floor">
-                    <option value="T">T</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                </select>
-
-                <div class="select-option">
-                    <div class="head">Floor</div>
-                    <div class="option"></div>
-                </div>
-
-                <div class="images">
-                    <div class="pic">
-                        add
-                    </div>
-                </div>
-
-                <footer style="padding: 0;">
-                    <ul>
-                        <li><span id="reset">reset</span></li>
-                        <li><span id="send">send</span></li>
-                    </ul>
-                </footer>
-
-
-            </section>
-
-            <section id="machineManagement" class="">
-                <ul class="image-list-small">
-                    {%for image in images%}
-                    <li>
-                        <a id="{{image[0]}}" href=" # " onclick="manage({{image[0]}},' {{image[1]}} ','{{image[2]}}','{{image[3]}}','{{image[4]}}')" style="background-image: url( 'data:image/png;base64, {{image[5]}}'); "></a>
-                        <div class="details ">
-                            <h3><a href="# ">{{image[1]}}</a></h3>
-                            <p class="image-author ">{{image[2]}}</p>
-                        </div>
-                    </li>
-                    {%endfor%}
-                </ul>
-            </section>
-
-        </div>
 
     </div>
    <div class="notification "></div>

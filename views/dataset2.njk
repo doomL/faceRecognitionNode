@@ -26,6 +26,24 @@
     <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="/js/capture.js"></script>
+<style>
+
+        #video_overlays {
+            display: flex;
+            align-items:center;
+            justify-content:center;
+        }
+        #over{
+            z-index:10000;
+        }
+        video{
+            position:absolute;
+            margin:0 auto;
+            display:block;
+            
+        }
+
+    </style>
 </head>
 
 <body>
@@ -74,8 +92,8 @@
     
                <div class="contentarea">
         <div class="camera">
-            <video id="video" onload="printLayout()" style="max-width:-webkit-fill-available ;margin: auto;display: block;">Video stream not available.</video>
             <div id="video_overlays" hidden>
+            <video id="video" onload="printLayout()" style="max-width:-webkit-fill-available ;margin: auto;display: block;">Video stream not available.</video>
                 <img id="over" src="/images/overlay/overlay1.png" />
             </div>
             <a href="#" class="photoB" id="take-photo" title="Take Photo">
@@ -83,10 +101,10 @@
         </div>
         <div class="row" style="margin: auto;display: table;">
     <div class="col-xs-6 previous">
-        <a id="next" class="push_button disabled" style="cursor: pointer;" >Prosegui</a>
+        <a id="next" class="push_button disabled" hidden style="cursor: pointer;" >Prosegui</a>
     </div>
     <div class="col-xs-6 next">
-        <a id="delete" class="push_button disabled" style="cursor: pointer;">Elimina Foto Precedente</a>
+        <a id="delete" class="push_button disabled" hidden style="cursor: pointer;">Elimina Foto Precedente</a>
     </div>
     </div>
 

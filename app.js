@@ -10,7 +10,7 @@ const nunjucks = require('nunjucks')
 const date = require('date-and-time')
 const multiparty = require('multiparty')
 const session = require('express-session')
-const multer = require('multer');
+const multer = require('multer')
 
 const app = express()
 
@@ -41,23 +41,23 @@ app.use(session({
     secure: false
 }))
 
-session.username
-    //Mysql DB setting
-
+//Mysql DB setting
 //Local Db
-var con = mysql.createConnection({
+localDBSettings = mysql.createConnection({
     host: "localhost",
     user: "admin",
-    database: "arsistant"
+    database: "recognitioncam"
 })
 
 //Heroku ClearDb
-// var con = mysql.createConnection({
-//     host: "eu-cdbr-west-02.cleardb.net",
-//     user: "b39e59a0dee129",
-//     password: "2994439f",
-//     database: "heroku_1b8eb32b46dbbf3"
-// })
+remoteDBSettings = mysql.createConnection({
+    host: "eu-cdbr-west-02.cleardb.net",
+    user: "b5a0621d59583a",
+    password: "98978855",
+    database: "heroku_8d1151a458eb2e9"
+})
+
+var con = remoteDBSettings
 
 con.connect(function(err) {
     if (err) throw err;
@@ -95,22 +95,22 @@ app.get('/', function(req, res) {
 
 app.get('/landing', function(req, res) {
     console.log(req.session.username)
-    res.render('landing.njk', { session: req.session, name: 'Main page' });
+    res.render('landing.njk', { session: req.session });
 });
 app.get('/login', function(req, res) {
-    res.render('login.njk', { name: 'Main page' });
+    res.render('login.njk', {});
 });
 app.get('/admin', function(req, res) {
-    res.render('admin.njk', { name: 'Main page' });
+    res.render('admin.njk', {});
 });
 app.get('/camera', function(req, res) {
-    res.render('camera.njk', { session: req.session, name: 'Main page' });
+    res.render('camera.njk', { session: req.session });
 });
 app.get('/dataset', function(req, res) {
-    res.render('dataset2.njk', { session: req.session, name: 'Main page' });
+    res.render('dataset2.njk', { session: req.session });
 });
 app.get('/signUp', function(req, res) {
-    res.render('signUp.njk', { name: 'Main page' });
+    res.render('signUp.njk', {});
 });
 
 app.post('/intruder', upload.any(), (req, res) => { //upload.single('video-blob')
@@ -142,16 +142,14 @@ app.post('/intruder', upload.any(), (req, res) => { //upload.single('video-blob'
             },
         ]
     };
-    transporter.sendMail(mailOptions, function(error, info) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent: ' + info.response);
-        }
-    });
+    // transporter.sendMail(mailOptions, function(error, info) {
+    //     if (error) {
+    //         console.log(error);
+    //     } else {
+    //         console.log('Email sent: ' + info.response);
+    //     }
+    // });
     // console.log(req.files[0].canvas)
-    fs.writeFileSync("dwadwa.webm", req.files[0].buffer)
-    fs.writeFileSync("dwadwa.png", req.files[1].buffer)
 })
 
 

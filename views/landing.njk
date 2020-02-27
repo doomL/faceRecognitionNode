@@ -43,9 +43,11 @@
                         <a class="nav-link js-scroll-trigger" href="/dataset">Nuovo Volto</a>
                     </li>
                     {%endif%}
+                    {%if session['loggato']==1 %}
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="/camera">Camera</a>
                     </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="#signup">Contact</a>
                     </li>

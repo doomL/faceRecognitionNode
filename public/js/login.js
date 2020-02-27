@@ -122,6 +122,7 @@ $(document).ready(function() {
             $("#login").click();
         }
     });
+    console.log(localStorage.getItem("myValue"))
 
-
+    localStorage.setItem("myValue", "123-abcd");
 });

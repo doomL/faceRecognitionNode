@@ -4,6 +4,7 @@ let maxDistance = 0.6
 let minConfidence = 0.9
 let forwardTimes = []
 let recorder = null
+var unknownCont = 0;
 
 function onIncreaseMinFaceSize() {
     minFaceSize = Math.min(faceapi.round(minFaceSize + 50), 300)
@@ -50,45 +51,60 @@ async function onPlay(videoEl) {
         landmarks,
         descriptor
     }) => {
-        faceapi.drawDetection('overlay', [detection], {
-            withScore: false
-        })
-        faceapi.drawLandmarks('overlay', landmarks.forSize(width, height), {
-            lineWidth: 4,
-            color: 'red'
-        })
+        // faceapi.drawDetection('overlay', [detection], {
+        //     withScore: false
+        // })
+        // faceapi.drawLandmarks('overlay', landmarks.forSize(width, height), {
+        //     lineWidth: 4,
+        //     color: 'red'
+        // })
         const bestMatch = getBestMatch(trainDescriptorsByClass, descriptor)
         const text = `${bestMatch.distance < maxDistance ? bestMatch.className : 'unknown'} (${bestMatch.distance})`
 
         console.log(text.substr(0, text.indexOf(' ')))
+
         if (text.substr(0, text.indexOf(' ')) == 'unknown') {
-            console.log("DWdwadwaWDwaDwaDW")
-            let recorder = RecordRTC(videoEl.srcObject, {
-                type: 'video',
-                //mimeType: 'video/mp4'
-            });
-            recorder.startRecording();
-            setTimeout(function() {
-                recorder.stopRecording(function() {
-                    let blob = recorder.getBlob();
-                    //invokeSaveAsDialog(blob);
-                    shoot(videoEl, blob);
-
+            unknownCont++
+            console.log(unknownCont)
+            if (unknownCont % 4 == 0) {
+                iziToast.error({
+                    title: 'Errore',
+                    message: text.substr(0, text.indexOf(' ')),
                 });
-            }, 20000);
+                console.log("DWdwadwaWDwaDwaDW")
+                let recorder = RecordRTC(videoEl.srcObject, {
+                    type: 'video',
+                    //mimeType: 'video/mp4'
+                });
+                recorder.startRecording();
+                setTimeout(function() {
+                    recorder.stopRecording(function() {
+                        let blob = recorder.getBlob();
+                        //invokeSaveAsDialog(blob);
+                        shoot(videoEl, blob);
 
+                    });
+                }, 20000);
+            }
+        } else {
+            unknownCont = 0
+            iziToast.success({
+                title: 'Success',
+                message: text.substr(0, text.indexOf(' ')),
+                timeout: 750
+            });
         }
         const {
             x,
             y,
             height: boxHeight
         } = detection.getBox()
-        faceapi.drawText(canvas.getContext('2d'), x, y + boxHeight, text,
-            Object.assign(faceapi.getDefaultDrawOptions(), {
-                color: 'red',
-                fontSize: 16
-            })
-        )
+            // faceapi.drawText(canvas.getContext('2d'), x, y + boxHeight, text,
+            //     Object.assign(faceapi.getDefaultDrawOptions(), {
+            //         color: 'red',
+            //         fontSize: 16
+            //     })
+            // )
     })
 
     setTimeout(() => onPlay(videoEl))
@@ -131,4 +147,23 @@ function larg() {
     canvas.height = getComputedStyle(inputVideo).height
 
     alert(getComputedStyle(inputVideo).width + "X" + getComputedStyle(inputVideo).height)
+}
+
+function settings() {
+    Swal.fire({
+        title: 'Min Hessian',
+        input: 'select',
+        inputOptions: {
+            200: '200',
+            150: '150',
+            100: '100',
+            50: '50'
+        },
+        showCancelButton: true,
+        inputValidator: (value) => {
+            return new Promise((resolve) => {
+                minFaceSize = value
+            })
+        }
+    })
 }

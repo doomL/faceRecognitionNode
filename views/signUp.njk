@@ -25,13 +25,13 @@
 <body>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-        <div class="container" style="font-size: large;">
-            <a class="navbar-brand js-scroll-trigger" style="font-size: x-large;" href="/">Smart Maintenance</a>
+     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+        <div class="container"style="font-size: large;">
+            <a class="navbar-brand js-scroll-trigger" style="font-size: x-large;"href="/">Smart Maintenance</a>
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-		Menu
-		<i class="fa fa-bars"></i>
-	  </button>
+    Menu
+    <i class="fa fa-bars"></i>
+  </button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
@@ -39,18 +39,27 @@
                     </li>
                     {%if session['admin'] == 1 %}
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="/admin">Admin</a>
+                        <a class="nav-link js-scroll-trigger" href="/dataset">Nuovo Volto</a>
                     </li>
                     {%endif%}
+                    {%if session['loggato']==1 %}
                     <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger" href="/surf">Fast Recognition</a>
+                        <a class="nav-link js-scroll-trigger" href="/camera">Camera</a>
                     </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="#signup">Contact</a>
                     </li>
                     {%if session['loggato'] == 1 %}
                     <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="/profilo">Gestione Utente</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link js-scroll-trigger" href="/logout">Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="/login">Login</a>
                     </li>
                     {%endif%}
                 </ul>

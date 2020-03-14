@@ -27,18 +27,12 @@ async function onPlay(videoEl) {
     if (videoEl.paused || videoEl.ended || !modelLoaded)
         return false
 
-    const {
-        width,
-        height
-    } = faceapi.getMediaDimensions(videoEl)
-    console.log(width)
+    const { width, height } = faceapi.getMediaDimensions(videoEl)
     const canvas = $('#overlay').get(0)
     canvas.width = width
     canvas.height = height
 
-    const mtcnnParams = {
-        minFaceSize
-    }
+    const mtcnnParams = { minFaceSize }
 
     const ts = Date.now()
     const fullFaceDescriptions = (await faceapi.allFacesMtcnn(videoEl, mtcnnParams))
@@ -51,13 +45,6 @@ async function onPlay(videoEl) {
         landmarks,
         descriptor
     }) => {
-        // faceapi.drawDetection('overlay', [detection], {
-        //     withScore: false
-        // })
-        // faceapi.drawLandmarks('overlay', landmarks.forSize(width, height), {
-        //     lineWidth: 4,
-        //     color: 'red'
-        // })
         const bestMatch = getBestMatch(trainDescriptorsByClass, descriptor)
         const text = `${bestMatch.distance < maxDistance ? bestMatch.className : 'unknown'} (${bestMatch.distance})`
 
@@ -146,12 +133,11 @@ function larg() {
     canvas.width = getComputedStyle(inputVideo).width
     canvas.height = getComputedStyle(inputVideo).height
 
-    alert(getComputedStyle(inputVideo).width + "X" + getComputedStyle(inputVideo).height)
 }
 
 function settings() {
     Swal.fire({
-        title: 'Min Hessian',
+        title: 'Min Face Size',
         input: 'select',
         inputOptions: {
             200: '200',

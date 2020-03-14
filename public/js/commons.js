@@ -177,9 +177,6 @@ async function shoot(video, blob) {
     var formData = new FormData();
     await formData.append('video-blob', blob);
     await formData.append('canvas', blobCanv);
-    // console.log(formData)
-
-    // console.log(blob)
 
     $.ajax({
         url: "/intruder",

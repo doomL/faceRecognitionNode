@@ -75,8 +75,11 @@
                 <h1 class="mx-auto my-0 text-uppercase">Recognition Cam</h1>
                 <h2 class="text-white-50 mx-auto mt-2 mb-5">Sistema di sicurezza con riconoscimento facciale</h2>
 
-                {%if session['loggato'] == 1 %}
-                <a href="/camera" class="btn btn-primary js-scroll-trigger">Avvia La Camera</a> {%else%}
+                {%if session['loggato'] == 1 and session['numVolti']>0 %}
+                <a href="/camera" class="btn btn-primary js-scroll-trigger">Avvia La Camera</a>
+                 {%elif  session['loggato'] == 1 and session['numVolti']==0 %}
+                  <a href="/dataset" class="btn btn-primary js-scroll-trigger">Aggiungi Almeno Un Volto</a>
+                 {%else%}
                 <a href="/login" class="btn btn-primary js-scroll-trigger">Accedi</a> {%endif%}
 
             </div>

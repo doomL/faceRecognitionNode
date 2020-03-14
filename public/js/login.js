@@ -64,39 +64,26 @@ $(document).ready(function() {
         var name = $('#name').val()
         var pass = $('#pass').val()
         var email = $('#email').val()
-        var azienda = $('#azienda').val()
-        var admin = $('#admin').val()
+
+        // if (name || pass || email == null)
+        //     window.location.reload()
 
         if (animating) return;
         animating = true;
         var that = this;
         ripple($(that), e);
-        /*$(that).addClass("processing");
 
-        setTimeout(function() {
-            $(that).addClass("success");
-            setTimeout(function() {
-                $app.show();
-                $app.css("top");
-                $app.addClass("active");
-            }, submitPhase2 - 70);
-            setTimeout(function() {
-                $login.hide();
-                $login.addClass("inactive");
-                animating = false;
-                $(that).removeClass("success processing");
-            }, submitPhase2);
-        }, submitPhase1);*/
         $.ajax({
             url: '/registration',
             type: 'POST',
-            data: { 'name': name, 'pass': md5(pass), 'email': email, 'azienda': azienda, },
+            data: { 'name': name, 'pass': md5(pass), 'email': email },
             success: function(response) {
                 iziToast.success({
                     title: 'OK',
-                    message: 'Successfully inserted record!',
+                    message: 'Registrazione Avvenuta Con Successo!',
+                    timeout: 2000,
+                    onClosed: function() { window.location.replace("/login") }
                 });
-                window.location.replace("/login");
             },
             error: function(response) {
                 //json = JSON.parse(response);
@@ -125,4 +112,26 @@ $(document).ready(function() {
     console.log(localStorage.getItem("myValue"))
 
     localStorage.setItem("myValue", "123-abcd");
+
+    function ValidateEmail(mail) {
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+            return (true)
+        }
+        Swal.fire(
+            'Errore',
+            "Email non valida",
+            'error'
+        ).then((result) => {
+            return (false)
+
+        })
+    }
+
+    $("input").on("keyup", function() {
+        if ($("#name").val() != "" && $("#pass").val() != "" && $("#email").val() != "") {
+            $(".toggle_disabled").removeAttr("disabled");
+        } else {
+            $(".toggle_disabled").attr("disabled");
+        }
+    });
 });

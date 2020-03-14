@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>AR-Sistant</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <!-- Custom fonts for this template -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/grayscale.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/userpage.css">
+ 
+
+
+</head>
+
+<body id="page-top" style="
+    background: linear-gradient(to bottom, rgba(22, 22, 22, .3) 0, rgba(22, 22, 22, .7) 75%, #161616 100%), url(../images/bg-masthead.jpg);
+background-repeat:no-repeat;background-size:cover">
+    <!-- Navigation -->
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand js-scroll-trigger" href="/">RecognitionCam</a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+    Menu
+    <i class="fa fa-bars"></i>
+  </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="/">Home</a>
+                    </li>
+                    {%if session['admin'] == 1 %}
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="/dataset">Nuovo Volto</a>
+                    </li>
+                    {%endif%}
+                    {%if session['loggato']==1 %}
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="/camera">Camera</a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="#signup">Contact</a>
+                    </li>
+                    {%if session['loggato'] == 1 %}
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="/profilo">Gestione Utente</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="/logout">Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link js-scroll-trigger" href="/login">Login</a>
+                    </li>
+                    {%endif%}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+<div id="wrapper__account">
+  <div class="row wrapper__account--top">
+    <div class="col-sm-12">
+      <h4 class="text--account-panel"> <i class="fa fa-cog"></i> Account Panel</h4>
+      <div class="account__user">
+        <h4>Welcome, {{session['username']}}</h4>
+        <p id="free">Account Type : {%if session['premium']%}<span>Premium</span>{%else%}<span>Free</span>{%endif%}</p>
+      </div>
+    </div>
+    <div class="col-sm-12">
+      <ul class="tab-menu">
+        <li class="active"><a> <i class="fa fa-user visible-xs-inline-block"></i><span class="hidden-xs">PERSONAL PROFILE</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="row wrapper__personal">
+    <div class="container line-vertical" id="line-vertical">
+      <h4 class="text-profile">Profile</h4>
+      <div class="col-sm-5">
+        <form class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input class="form-control" type="text" placeholder="Your full name..." value="Thiraphat Yotharak"/>
+            </div>
+                </div>
+              </div>
+            <div class="form-group has-error">
+              <label>Email Address</label>
+              <input class="form-control" type="email" disabled="disabled" value={{session['email']}}/>
+              <p>Your email is not verified. We have sent you an email to verify you account<a class="click-here"> Send again</a></p>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-sm-5 col-sm-offset-2">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label>Profile image</label>
+            </div>
+            {% if not session['premium']%}<div id="paypal-button5"></div>{%endif%}
+            <div class="row">
+              <div class="col-xs-6 col-sm-8 col-md-6 col-lg-5">
+                <div class="form-group"><a id="img_profile">
+                    <div class="img-profile" style="background-image: url('http://www.9t.com/wp-content/themes/9t/image/mascot.png');" data-toggle="modal" data-target="#modal_upload"></div>
+                    <div class="camera-icon" data-toggle="modal" data-target="#modal_upload"><i class="fa fa-camera fa-lg"></i><span class="hidden-xs">&nbsp;&nbsp;Upload image</span></div></a></div>
+              </div>
+              <div class="col-xs-6 col-sm-4 col-md-4 col-lg-5 bottom-column col-phone--right control-upload" style="display: none;">
+                <button class="btn btn-gray btn-sm btn-block" id="btn_remove_image">Remove</button>
+                <div class="form-group">
+                  <button class="btn btn-base btn-sm btn-block" data-toggle="modal" data-target="#modal_crop_image">Edit image</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-12 text-center save-change-container">
+            <button class="btn btn-base btn-md" id="save_changed">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div><br/>
+    <hr/>
+    <div class="container">
+      <h4 class="text-profile">Password</h4>
+      <div class="col-sm-6">
+        <form class="row">
+          <div class="col-sm-12">
+            <div class="form-group" id="show_old_password">
+              <label>Password</label><a class="btn-change-password pull-right">
+                <label>Change Password</label></a>
+              <input class="form-control" type="password" disabled="disabled" value="1234567890"/>
+            </div>
+          </div>
+          <div id="hidden_change_password">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Old Password</label>
+                <input class="form-control" id="old_password" type="password"/>
+              </div>
+              <div class="form-group">
+                <label>New Password</label>
+                <input class="form-control" type="password"/>
+              </div>
+              <div class="form-group">
+                <label>Confirm Password</label>
+                <input class="form-control" type="password"/>
+              </div>
+            </div>
+            <div class="col-sm-8 col-md-9">
+              <div class="form-group text-right"><a class="btn btn-base btn-block" id="save_new_password">Save new password</a></div>
+            </div>
+            <div class="col-sm-4 col-md-3 no-padding-left">
+              <div class="form-group text-right"><a class="btn btn-gray btn-block" id="cancel">Cancel</a></div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade account-page" id="modal_upload" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close hidden-xs" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h5 class="modal-title" id="myModalLabel">Upload profile picture</h5>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-6 height-upload">
+            <input id="choose_file" type="file" name="choose_file" accept="image/*"/>
+            <label class="label-choose-file" for="choose_file"><a class="upload-photo"><i class="fa fa-plus-circle fa-2x"></i>&nbsp;Upload photo</a></label>
+          </div>
+          <div class="col-sm-6 height-upload">
+            <input id="take_photo" type="file" name="take_photo" accept="image/*"/>
+            <label class="label-choose-file" for="take_photo"><a class="take-photo"><i class="fa fa-camera fa-2x"></i>&nbsp;Take photo</a></label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer visible-xs-block"><a data-dismiss="modal">Cancel</a></div>
+    </div>
+  </div>
+</div>
+<div class="modal fade account-page" id="modal_crop_image" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header"><a class="pull-left visible-xs" id="btnCancel" data-dismiss="modal" aria-label="Close">Cancel</a>
+        <h5 class="modal-title visible-xs-inline-block" id="myModalLabel">Upload profile picture</h5>
+        <h5 class="modal-title hidden-xs">Crop photo</h5><a class="pull-right visible-xs" id="btnSet" data-dismiss="modal" aria-label="Close">Set</a>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="crop-container">
+              <div class="hidden-xs" id="drag__reposition"><i class="fa fa-arrows"></i><span> Drag to Reposition</span></div>
+              <div class="imageBox">
+                <div class="thumbBox"></div>
+                <div class="spinner" style="display: none;">Loading...</div>
+              </div>
+              <div class="range__zoom--inner hidden-xs"><a id="btnZoomOut">-</a>
+                <input class="hidden-xs" id="range_zoom" type="range" min="0" max="9" value="0"/><a id="btnZoomIn">+</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer"><span class="visible-xs-inline-block">Move and Scale photo to fit</span>
+        <button class="btn btn-gray btn-sm hidden-xs" data-dismiss="modal" aria-label="Close">Cancel</button>
+        <button class="btn btn-base btn-sm hidden-xs" id="btnSet_desktop" data-dismiss="modal" aria-label="Close">Set image</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Signup Section -->
+    <section id="signup" class="signup-section" style="background:transparent">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10 col-lg-8 mx-auto text-center">
+
+                    <i class="fa fa-paper-plane fa-2x mb-2 text-white"></i>
+                    <h2 class="text-white mb-5">Subscribe to receive updates!</h2>
+
+                    <form class="form-inline d-flex">
+                        <input type="email" class="form-control flex-fill mr-0 mr-sm-2 mb-3 mb-sm-0" id="inputEmail" placeholder="Enter email address...">
+                        <button type="submit" class="btn btn-primary mx-auto">Subscribe</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section bg-black">
+        <div class="container">
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="card py-4 h-100">
+                        <div class="card-body text-center">
+                            <i class="fa fa-map-marked-alt text-primary mb-2"></i>
+                            <h4 class="text-uppercase m-0">Address</h4>
+                            <hr class="my-4">
+                            <div class="small text-black-50">Ponte Pietro Bucci, Rende CS</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="card py-4 h-100">
+                        <div class="card-body text-center">
+                            <i class="fa fa-envelope text-primary mb-2"></i>
+                            <h4 class="text-uppercase m-0">Email</h4>
+                            <hr class="my-4">
+                            <div class="small text-black-50">
+                                <a href="#">info@recognitioncam.com</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <div class="card py-4 h-100">
+                        <div class="card-body text-center">
+                            <i class="fa fa-mobile-alt text-primary mb-2"></i>
+                            <h4 class="text-uppercase m-0">Phone</h4>
+                            <hr class="my-4">
+                            <div class="small text-black-50">+39 1234567890</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="social d-flex justify-content-center">
+                <a href="#" class="mx-2">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="mx-2">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="mx-2">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black small text-center text-white-50">
+        <div class="container">
+            Le immagini potrebbero non corrispondere al prodotto reale
+        </div>
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.bundle.min.js "></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js "></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="/js/grayscale.min.js"></script>
+    <script  src="/js/userpage.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+        <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+     <script src="js/paypalButtons.js"></script>
+
+
+</body>
+
+</html>

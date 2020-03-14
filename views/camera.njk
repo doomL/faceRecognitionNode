@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/css/iziToast.min.css">
         <script src="/js/iziToast.min.js" type="text/javascript"></script>
     <script src="js/commons.js"></script>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/styles.css">
     <script src="js/facecam.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
@@ -157,7 +157,7 @@ var init = function() {
 
 doc.on('ready', init);
 
-await Swal.fire({
+{# await Swal.fire({
   title: 'Select field validation',
   input: 'select',
   inputOptions: {
@@ -181,7 +181,7 @@ await Swal.fire({
 
 if (fruit) {
   Swal.fire(`You selected: ${fruit}`)
-}
+} #}
 
 </script>
 

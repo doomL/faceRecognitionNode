@@ -1,7 +1,6 @@
 const express = require('express')
 const path = require('path')
-const { get } = require('request')
-const https = require('https')
+const http = require('http')
 const fs = require('fs')
 const mysql = require('mysql')
 const nodemailer = require('nodemailer')
@@ -20,7 +19,6 @@ app.use(express.static(path.join(__dirname, './public')))
 app.use(express.static(path.join(__dirname, 'weights')))
 app.use(express.static(path.join(__dirname, 'dist')))
 app.use(express.static(path.join(__dirname, 'layouts')))
-    //app.use(express.static(path.join(__dirname, 'node_modules/nunjucks/browser')))
 
 const upload = multer();
 var htmlEmail = fs.createReadStream('EmailTemplate.html');
@@ -31,68 +29,43 @@ nunjucks.configure('views', {
     express: app
 });
 
-
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 
 app.use(session({
-    secret: 'N12uUF6cVT',
+    secret: process.env.SESSION_SECRET || 'change-me',
     resave: true,
     saveUninitialized: true,
     secure: false
 }))
 
-//Mysql DB setting
-//Local Db
-localDBSettings = mysql.createConnection({
-    host: "localhost",
-    user: "admin",
-    database: "recognitioncam"
+var con = mysql.createConnection({
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'admin',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'recognitioncam'
 })
-
-//Heroku ClearDb
-remoteDBSettings = mysql.createConnection({
-    host: "eu-cdbr-west-02.cleardb.net",
-    user: "b5a0621d59583a",
-    password: "98978855",
-    database: "heroku_8d1151a458eb2e9"
-})
-
-var con = localDBSettings
 
 con.connect(function(err) {
     if (err) throw err;
     console.log("+++DB Connected!+++");
 });
 
-//mail send setting
 var transporter = nodemailer.createTransport({
-    host: "smtp.sendgrid.net",
-    port: "465",
+    host: process.env.SMTP_HOST || 'smtp.sendgrid.net',
+    port: parseInt(process.env.SMTP_PORT || '465'),
     auth: {
-        user: "apikey",
-        pass: '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'
+        user: process.env.SMTP_USER || 'apikey',
+        pass: process.env.SMTP_PASS
     }
 });
 
-const port = 3000
-
-var key = fs.readFileSync(__dirname + '/certs/selfsigned.key');
-var cert = fs.readFileSync(__dirname + '/certs/selfsigned.crt');
-
-var options = {
-    key: key,
-    cert: cert
-};
-
+const port = process.env.PORT || 3000
 
 app.get('/', function(req, res) {
     console.log(req.session.username)
     res.render('landing.njk', { session: req.session, name: 'Main page' });
 });
-//app.get('/', (req, res) => res.sendFile(path.join(viewsDir, 'index.njk')))
-
-//app.get('/dataset', (req, res) => res.sendFile(path.join(viewsDir, 'dataset.njk')))
 
 app.get('/landing', function(req, res) {
     console.log(req.session.username)
@@ -127,7 +100,7 @@ app.post('/intruder', upload.any(), (req, res) => {
     });
     console.log("intruso")
     var mailOptions = {
-        from: 'info@recognitioncam.com',
+        from: process.env.MAIL_FROM || 'info@recognitioncam.com',
         to: emailUt,
         subject: now,
         text: 'Attenzione! Una persona, con volto non riconosciuto, è appena entrata in casa.',
@@ -173,6 +146,7 @@ app.post('/dataset', (req, res) => {
     })
     console.log("photo taken!")
 })
+
 app.post('/login1', (req, res) => {
     var username = req.body.name
     var password = req.body.pass
@@ -197,31 +171,21 @@ app.post('/login1', (req, res) => {
             console.log("wafnwjadnjwand")
         } else
             res.sendStatus(400)
-            // res.end("error");
-
     })
-
-    // con.query(aziendaQuery, [username], function(err, result, fields) {
-    //     req.session.azienda = result[0]
-    // })
-
 })
 
 app.post('/registration', (req, res) => {
     var username = req.body.name
     var password = req.body.pass
     var email = req.body.email
-    var user = [username, password, email, 1, 1]
     var insertionQuery = "INSERT INTO user(username,password,email,admin,numVolti,premium,plus) VALUES (?,?,?,?,?,?,?)"
     con.query(insertionQuery, [username, password, email, 0, 0, 0, 0],
         function(err, result, fields) {
-            // if (err) throw   err;
             console.log("INSERITO")
             console.log(result)
             fs.mkdirSync(__dirname + "/public/images/faces/" + username)
             res.end('{"success" : "Successfully", "status" : 200}');
         });
-    // con.end()
 })
 
 app.get('/logout', (req, res) => {
@@ -229,5 +193,5 @@ app.get('/logout', (req, res) => {
     res.redirect('/')
 })
 
-var server = https.createServer(options, app)
+var server = http.createServer(app)
 server.listen(port, () => { console.log("listening on port: " + port) });

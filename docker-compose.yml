@@ -1,0 +1,10 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "27341:3000"
+    env_file:
+      - .env
+    volumes:
+      - ./public/images/faces:/app/public/images/faces

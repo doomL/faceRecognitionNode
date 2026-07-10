@@ -158,21 +158,29 @@ function capture(video, scaleFactor) {
  * Invokes the <code>capture</code> function and attaches the canvas element to the DOM.
  */
 async function shoot(video, blob) {
-
-    $('<canvas>').attr({
-        id: "canvas"
-    }).appendTo('#output');
-
-    var canvas = document.getElementById('canvas');
-    var ctx = canvas.getContext('2d');
-
+    var canvas = document.createElement('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
+    var ctx = canvas.getContext('2d');
     ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
 
-    var canvasData = canvas.toDataURL('image/png')
+    // timestamp label
+    var ts = new Date().toLocaleTimeString('it-IT');
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.fillRect(0, canvas.height - 28, canvas.width, 28);
+    ctx.fillStyle = '#fff';
+    ctx.font = '14px sans-serif';
+    ctx.fillText('Unknown — ' + ts, 8, canvas.height - 8);
+
+    canvas.style.cssText = 'max-width:100%;margin:8px;border-radius:8px;display:block;';
+    var out = document.getElementById('output');
+    out.prepend(canvas);
+    var ph = document.getElementById('output-placeholder');
+    if (ph) ph.style.display = 'none';
+
+    var canvasData = canvas.toDataURL('image/png');
     var png = canvasData.split(',')[1];
-    var blobCanv = base64toBlob(png)
+    var blobCanv = base64toBlob(png);
 
     var formData = new FormData();
     await formData.append('video-blob', blob);
@@ -184,12 +192,7 @@ async function shoot(video, blob) {
         method: "POST",
         processData: false,
         contentType: false
-
     });
-
-    // for (var i = 0; i < 4; i++) {
-    //     output.appendChild(snapshots[i]);
-    // }
 }
 
 function base64toBlob(base64Data, contentType) {

@@ -39,17 +39,30 @@ app.use(session({
     secure: false
 }))
 
-var con = mysql.createConnection({
-    host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'admin',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'recognitioncam'
-})
+var con
 
-con.connect(function(err) {
-    if (err) throw err;
-    console.log("+++DB Connected!+++");
-});
+function dbConnect() {
+    con = mysql.createConnection({
+        host: process.env.DB_HOST || 'localhost',
+        user: process.env.DB_USER || 'admin',
+        password: process.env.DB_PASSWORD || '',
+        database: process.env.DB_NAME || 'recognitioncam'
+    })
+    con.connect(function(err) {
+        if (err) {
+            console.log('DB connection failed, retry in 3s:', err.message)
+            setTimeout(dbConnect, 3000)
+            return
+        }
+        console.log("+++DB Connected!+++")
+    })
+    con.on('error', function(err) {
+        console.log('DB error:', err.code)
+        if (err.fatal) dbConnect()
+    })
+}
+
+dbConnect();
 
 var transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.sendgrid.net',
@@ -61,6 +74,41 @@ var transporter = nodemailer.createTransport({
 });
 
 const port = process.env.PORT || 3000
+
+function scanFaces() {
+    const facesRoot = path.join(__dirname, 'public/images/faces')
+    const people = []
+    const seen = new Set()
+
+    function walkDir(dir) {
+        let entries
+        try { entries = fs.readdirSync(dir) } catch (e) { return }
+        const images = entries.filter(f => /\.(png|jpg|jpeg)$/i.test(f))
+        if (images.length > 0) {
+            const name = path.basename(dir)
+            if (!seen.has(name)) {
+                seen.add(name)
+                const rel = path.relative(path.join(__dirname, 'public'), dir)
+                people.push({
+                    name,
+                    preview: '/' + rel.replace(/\\/g, '/') + '/' + images[0],
+                    count: images.length
+                })
+            }
+        }
+        entries.filter(f => {
+            try { return fs.statSync(path.join(dir, f)).isDirectory() } catch (e) { return false }
+        }).forEach(sub => walkDir(path.join(dir, sub)))
+    }
+
+    walkDir(facesRoot)
+    return people
+}
+
+app.get('/volti', function(req, res) {
+    if (!req.session.loggato) return res.redirect('/login')
+    res.render('volti.njk', { session: req.session, people: scanFaces() })
+})
 
 app.get('/', function(req, res) {
     console.log(req.session.username)
@@ -135,7 +183,7 @@ app.post('/aggiornaAccount', (req, res) => {
 })
 
 app.post('/dataset', (req, res) => {
-    fs.mkdirSync(__dirname + "/public/images/faces/" + req.session.username + "/" + req.body.name);
+    fs.mkdirSync(__dirname + "/public/images/faces/" + req.session.username + "/" + req.body.name, { recursive: true });
     var i;
     for (i = 0; i < 5; i++)
         fs.writeFileSync(__dirname + "/public/images/faces/" + req.session.username + "/" + req.body.name + "/" + req.body.name + i + ".png", req.body.images[i].replace(/^data:image\/png;base64,/, ""), { encoding: 'base64' })
@@ -154,23 +202,16 @@ app.post('/login1', (req, res) => {
     selectQuery = "SELECT * FROM user WHERE username = ? AND password = ?"
     console.log(password)
     con.query(selectQuery, [username, password], function(err, result, fields) {
-        if (result[0] != null) {
-            isEmpty = false;
-            console.log("+++++++++++++++++++++++++")
-            console.log(isEmpty)
+        if (err || !result[0]) {
+            return res.sendStatus(400)
         }
-        console.log("dwadwad " + result[0]["numVolti"])
         req.session.loggato = 1
         req.session.username = username
         req.session.numVolti = result[0]["numVolti"]
         req.session.premium = result[0]["premium"]
         req.session.email = result[0]["email"]
         console.log("Login Done " + req.session.username)
-        if (!isEmpty) {
-            res.end('{"success" : "Successfully", "status" : 200}');
-            console.log("wafnwjadnjwand")
-        } else
-            res.sendStatus(400)
+        res.end('{"success" : "Successfully", "status" : 200}');
     })
 })
 
